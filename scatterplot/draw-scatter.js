@@ -88,8 +88,6 @@ async function drawScatter() {
         .text("Relative humidity")
         .style("transform", "rotate(-90deg)")
         .style("text-anchor", "middle");
-
-
 }
 
 drawScatter().then();
