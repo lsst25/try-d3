@@ -4,6 +4,10 @@ const BIN_LABEL_FONT_FAMILY = "sans-serif";
 
 const LABEL_FONT_SIZE = "12px";
 
+const AXIS_LABEL_FONT_COLOR = "black"
+const AXIS_LABEL_FONT_SIZE = "1.4em"
+const AXIS_LABEL_GAP = 10;
+
 const BAR_COLOR = "cornflowerblue";
 const BAR_PADDING = 1;
 
@@ -112,6 +116,20 @@ async function drawBars() {
         .attr("fill", MEAN_LINE_COLOR)
         .attr("font-size", LABEL_FONT_SIZE)
         .style("text-anchor", "middle");
+
+    const xAxisGenerator = d3.axisBottom()
+        .scale(xScale);
+
+    const xAxis = bounds.append("g")
+        .call(xAxisGenerator)
+        .style("transform", `translateY(${dimensions.boundedHeight}px`);
+
+    const xAxisLabel = xAxis.append("text")
+        .attr("x", dimensions.boundedWidth / 2)
+        .attr("y", dimensions.margin.bottom - AXIS_LABEL_GAP)
+        .attr("fill", AXIS_LABEL_FONT_COLOR)
+        .attr("font-size", AXIS_LABEL_FONT_SIZE)
+        .text("Humidity")
 }
 
 drawBars()
