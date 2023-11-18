@@ -58,6 +58,13 @@ async function drawBars() {
             .attr("width", dimensions.width)
             .attr("height", dimensions.height);
 
+        wrapper
+            .attr("role", "figure")
+            .attr("tabindex", "0");
+
+        wrapper.append("title")
+            .text(`Histogram looking at the distribution of ${label} in 2016`)
+
         const bounds = wrapper.append("g")
             .style("transform", `translate(${
                 dimensions.margin.left
@@ -82,11 +89,23 @@ async function drawBars() {
             .range([dimensions.boundedHeight, 0])
             .nice();
 
-        const binsGroup = bounds.append("g");
+        const binsGroup = bounds.append("g")
+            .attr("tabindex", "0")
+            .attr("role", "list")
+            .attr("aria-label", "histogram bars");
 
         const binGroups = binsGroup.selectAll("g")
             .data(bins)
-            .enter().append("g");
+            .enter().append("g")
+            .attr("tabindex", "0")
+            .attr("role", "listitem")
+            .attr("aria-label", d => `There were ${
+                yAccessor(d)
+            } days between ${
+                d.x0.toString().slice(0, 4)
+            } and ${
+                d.x1.toString().slice(0, 4)
+            } ${label} levels`);
 
         const barRects = binGroups.append("rect")
             .attr("x", d => xScale(d.x0) + BAR_PADDING / 2)
@@ -141,7 +160,11 @@ async function drawBars() {
             .attr("y", dimensions.margin.bottom - AXIS_LABEL_GAP)
             .attr("fill", AXIS_LABEL_FONT_COLOR)
             .attr("font-size", AXIS_LABEL_FONT_SIZE)
-            .text(label)
+            .text(label);
+
+        wrapper.selectAll("text")
+            .attr("role", "presentation")
+            .attr("aria-hidden", "true");
     };
 
     metrics.forEach(([metric, label]) => drawHistogram(metric, label));
