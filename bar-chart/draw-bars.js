@@ -1,3 +1,11 @@
+const BIN_LABEL_BOTTOM_GAP = 3;
+const BIN_LABEL_FONT_COLOR = "darkgrey";
+const BIN_LABEL_FONT_FAMILY = "sans-serif";
+const BIN_LABEL_FONT_SIZE = "12px";
+
+const BAR_COLOR = "cornflowerblue";
+const BAR_PADDING = 1;
+
 async function drawBars() {
     const dataset = await d3.json("./../my_weather_data.json");
 
@@ -60,18 +68,28 @@ async function drawBars() {
         .data(bins)
         .enter().append("g");
 
-    const barPadding = 1;
-
     const barRects = binGroups.append("rect")
-        .attr("x", d => xScale(d.x0) + barPadding / 2)
+        .attr("x", d => xScale(d.x0) + BAR_PADDING / 2)
         .attr("y", d => yScale(yAccessor(d)))
         .attr("width", d => d3.max([
             0,
-            xScale(d.x1) - xScale(d.x0) - barPadding
+            xScale(d.x1) - xScale(d.x0) - BAR_PADDING
         ]))
         .attr("height", d => dimensions.boundedHeight
             - yScale(yAccessor(d)))
-        .attr("fill", "cornflowerblue");
+        .attr("fill", BAR_COLOR);
+
+    const barCenterAccessor = (d) => xScale(d.x0) + (xScale(d.x1) - xScale(d.x0)) / 2;
+
+    const barText = binGroups.filter(yAccessor)
+        .append("text")
+        .attr("x", barCenterAccessor)
+        .attr("y", d => yScale(yAccessor(d)) - BIN_LABEL_BOTTOM_GAP)
+        .text(yAccessor)
+        .style("text-anchor", "middle")
+        .attr("fill", BIN_LABEL_FONT_COLOR)
+        .style("font-size", BIN_LABEL_FONT_SIZE)
+        .style("font-family", BIN_LABEL_FONT_FAMILY)
 }
 
 drawBars()
