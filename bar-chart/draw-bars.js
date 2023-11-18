@@ -1,10 +1,14 @@
 const BIN_LABEL_BOTTOM_GAP = 3;
 const BIN_LABEL_FONT_COLOR = "darkgrey";
 const BIN_LABEL_FONT_FAMILY = "sans-serif";
-const BIN_LABEL_FONT_SIZE = "12px";
+
+const LABEL_FONT_SIZE = "12px";
 
 const BAR_COLOR = "cornflowerblue";
 const BAR_PADDING = 1;
+
+const MEAN_LINE_COLOR = "maroon";
+const MEAN_LINE_DASHARRAY = "2px 4px";
 
 async function drawBars() {
     const dataset = await d3.json("./../my_weather_data.json");
@@ -88,8 +92,26 @@ async function drawBars() {
         .text(yAccessor)
         .style("text-anchor", "middle")
         .attr("fill", BIN_LABEL_FONT_COLOR)
-        .style("font-size", BIN_LABEL_FONT_SIZE)
-        .style("font-family", BIN_LABEL_FONT_FAMILY)
+        .style("font-size", LABEL_FONT_SIZE)
+        .style("font-family", BIN_LABEL_FONT_FAMILY);
+
+    const mean = d3.mean(dataset, metricAccessor)
+
+    const meanLine = bounds.append("line")
+        .attr("x1", xScale(mean))
+        .attr("x2", xScale(mean))
+        .attr("y1", -15)
+        .attr("y2", dimensions.boundedHeight)
+        .attr("stroke", MEAN_LINE_COLOR)
+        .attr("stroke-dasharray", MEAN_LINE_DASHARRAY);
+
+    const meanLabel = bounds.append("text")
+        .attr("x", xScale(mean))
+        .attr("y", -20)
+        .text("mean")
+        .attr("fill", MEAN_LINE_COLOR)
+        .attr("font-size", LABEL_FONT_SIZE)
+        .style("text-anchor", "middle");
 }
 
 drawBars()
